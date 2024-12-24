@@ -1,0 +1,30 @@
+services:
+  local:
+    build:
+      context: ./local
+      dockerfile: Dockerfile
+      args:
+        REMOTE_ED25519_PUBLIC_KEY: ${REMOTE_ED25519_PUBLIC_KEY:-default}
+    volumes:
+      - local_ssh:/root/.ssh
+      - local_mnt:/app/mnt
+    working_dir: /app
+    hostname: local
+  remote:
+    privileged: true
+    build:
+      context: ./remote
+      dockerfile: Dockerfile
+      args:
+        KNOWN_HOSTS: ${KNOWN_HOSTS:-default}
+    volumes:
+      - remote_ssh:/root/.ssh
+      - remote_mnt:/app/mnt
+    working_dir: /app
+    hostname: remote
+
+volumes:
+  local_ssh:
+  local_mnt:
+  remote_ssh:
+  remote_mnt:
